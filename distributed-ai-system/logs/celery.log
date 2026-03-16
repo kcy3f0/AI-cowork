@@ -1,0 +1,66 @@
+
+ -------------- celery@devbox v5.3.6 (emerald-rush)
+--- ***** -----
+-- ******* ---- Linux-6.8.0-x86_64-with-glibc2.39 2026-03-16 08:14:38
+- *** --- * ---
+- ** ---------- [config]
+- ** ---------- .> app:         tasks:0x7f30e6519430
+- ** ---------- .> transport:   redis://localhost:6379/0
+- ** ---------- .> results:     redis://localhost:6379/0
+- *** --- * --- .> concurrency: 4 (prefork)
+-- ******* ---- .> task events: OFF (enable -E to monitor tasks in this worker)
+--- ***** -----
+ -------------- [queues]
+                .> celery           exchange=celery(direct) key=celery
+
+
+[tasks]
+  . agent_task_queue
+
+[2026-03-16 08:14:39,493: WARNING/MainProcess] /home/jules/.pyenv/versions/3.12.13/lib/python3.12/site-packages/celery/worker/consumer/consumer.py:507: CPendingDeprecationWarning: The broker_connection_retry configuration setting will no longer determine
+whether broker connection retries are made during startup in Celery 6.0 and above.
+If you wish to retain the existing behavior for retrying connections on startup,
+you should set broker_connection_retry_on_startup to True.
+  warnings.warn(
+
+[2026-03-16 08:14:39,529: INFO/MainProcess] Connected to redis://localhost:6379/0
+[2026-03-16 08:14:39,537: WARNING/MainProcess] /home/jules/.pyenv/versions/3.12.13/lib/python3.12/site-packages/celery/worker/consumer/consumer.py:507: CPendingDeprecationWarning: The broker_connection_retry configuration setting will no longer determine
+whether broker connection retries are made during startup in Celery 6.0 and above.
+If you wish to retain the existing behavior for retrying connections on startup,
+you should set broker_connection_retry_on_startup to True.
+  warnings.warn(
+
+[2026-03-16 08:14:39,546: INFO/MainProcess] mingle: searching for neighbors
+[2026-03-16 08:14:40,562: INFO/MainProcess] mingle: all alone
+[2026-03-16 08:14:40,578: INFO/MainProcess] celery@devbox ready.
+[2026-03-16 08:14:44,785: INFO/MainProcess] Connected to redis://localhost:6379/0
+[2026-03-16 08:14:44,786: WARNING/MainProcess] /home/jules/.pyenv/versions/3.12.13/lib/python3.12/site-packages/celery/worker/consumer/consumer.py:507: CPendingDeprecationWarning: The broker_connection_retry configuration setting will no longer determine
+whether broker connection retries are made during startup in Celery 6.0 and above.
+If you wish to retain the existing behavior for retrying connections on startup,
+you should set broker_connection_retry_on_startup to True.
+  warnings.warn(
+
+[2026-03-16 08:14:44,794: INFO/MainProcess] mingle: searching for neighbors
+[2026-03-16 08:14:45,243: INFO/MainProcess] Task agent_task_queue[3eadec63-4e97-4bab-812f-f603949c5c77] received
+[2026-03-16 08:14:45,252: INFO/ForkPoolWorker-1] Task agent_task_queue[3eadec63-4e97-4bab-812f-f603949c5c77] succeeded in 0.0076124870000739975s: None
+[2026-03-16 08:14:45,808: INFO/MainProcess] mingle: all alone
+[2026-03-16 08:14:45,824: INFO/MainProcess] celery@devbox ready.
+[2026-03-16 08:14:52,187: INFO/MainProcess] Connected to redis://localhost:6379/0
+[2026-03-16 08:14:52,194: WARNING/MainProcess] /home/jules/.pyenv/versions/3.12.13/lib/python3.12/site-packages/celery/worker/consumer/consumer.py:507: CPendingDeprecationWarning: The broker_connection_retry configuration setting will no longer determine
+whether broker connection retries are made during startup in Celery 6.0 and above.
+If you wish to retain the existing behavior for retrying connections on startup,
+you should set broker_connection_retry_on_startup to True.
+  warnings.warn(
+
+[2026-03-16 08:14:52,202: INFO/MainProcess] mingle: searching for neighbors
+[2026-03-16 08:14:53,220: WARNING/MainProcess] /home/jules/.pyenv/versions/3.12.13/lib/python3.12/site-packages/celery/app/control.py:56: DuplicateNodenameWarning: Received multiple replies from node name: celery@devbox.
+Please make sure you give each node a unique nodename using
+the celery worker `-n` option.
+  warnings.warn(DuplicateNodenameWarning(
+
+[2026-03-16 08:14:53,220: INFO/MainProcess] mingle: all alone
+[2026-03-16 08:14:53,235: INFO/MainProcess] celery@devbox ready.
+[2026-03-16 08:17:35,259: INFO/MainProcess] Task agent_task_queue[7a769c68-d0d2-4a26-8f72-f1f263806ac0] received
+[2026-03-16 08:17:35,279: INFO/ForkPoolWorker-1] Task agent_task_queue[7a769c68-d0d2-4a26-8f72-f1f263806ac0] succeeded in 0.018675764000022355s: None
+[2026-03-16 08:18:10,084: INFO/MainProcess] Task agent_task_queue[87883c8c-f5fb-4c0f-93b5-aaa3d6279b5d] received
+[2026-03-16 08:18:10,100: INFO/ForkPoolWorker-1] Task agent_task_queue[87883c8c-f5fb-4c0f-93b5-aaa3d6279b5d] succeeded in 0.01440645399998175s: None
