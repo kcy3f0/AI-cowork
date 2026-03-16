@@ -1,0 +1,52 @@
+services:
+  redis:
+    image: public.ecr.aws/docker/library/redis:7-alpine
+    container_name: redis_broker
+    ports:
+      - "6379:6379"
+
+  api:
+    build: ./api
+    container_name: fastapi_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_URL=redis://redis_broker:6379/0
+      - DB_PATH=/app/data/tasks.db
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - redis
+
+  celery_worker:
+    build: ./api  # 共用 API 的環境與程式碼來執行 Celery
+    container_name: celery_task_worker
+    command: ["celery", "-A", "main.celery_app", "worker", "--loglevel=info"]
+    environment:
+      - REDIS_URL=redis://redis_broker:6379/0
+      - DB_PATH=/app/data/tasks.db
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - redis
+      - api
+
+  dashboard:
+    build: ./dashboard
+    container_name: streamlit_dashboard
+    ports:
+      - "8501:8501"
+    environment:
+      - API_URL=http://api:8000
+    depends_on:
+      - api
+
+  agent:
+    build: ./agent
+    container_name: ai_agent_worker
+    environment:
+      - API_URL=http://api:8000
+      - REDIS_URL=redis://redis_broker:6379/0
+    depends_on:
+      - api
+      - redis
