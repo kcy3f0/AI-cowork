@@ -14,6 +14,9 @@ models.Base.metadata.create_all(bind=engine)
 app = FastAPI(title="Distributed AI Agent System API")
 
 # --- Celery 設定 ---
+# 安全性增強：Redis 連線現在支援身份驗證。
+# 在生產環境中，請透過環境變數 REDIS_URL 提供包含密碼的連線字串。
+# 格式範例：redis://:your_password@localhost:6379/0
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 celery_app = Celery("tasks", broker=REDIS_URL, backend=REDIS_URL)
 
