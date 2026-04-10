@@ -9,5 +9,5 @@ class Task(Base):
     description = Column(Text, nullable=False) # 任務描述
     status = Column(String, default="Pending")  # Pending, Claimed, Completed, Failed
     result = Column(Text, nullable=True)       # 最終執行結果
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.datetime.now(datetime.UTC).replace(tzinfo=None))
+    updated_at = Column(DateTime, default=lambda: datetime.datetime.now(datetime.UTC).replace(tzinfo=None), onupdate=lambda: datetime.datetime.now(datetime.UTC).replace(tzinfo=None))
