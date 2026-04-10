@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 import os
 from celery import Celery
+from datetime import datetime
 
 import models
 from database import engine, get_db
@@ -39,12 +40,18 @@ class TaskStatusUpdate(BaseModel):
     result: Optional[str] = None
 
 class TaskResponse(BaseModel):
+    """
+    任務回應的 Pydantic 模型。
+    將 created_at 與 updated_at 的型別改為 datetime，
+    這樣 Pydantic 在序列化時會自動將其轉換為 ISO 格式字串，
+    避免在每個 API Endpoint 中重複撰寫格式化邏輯。
+    """
     id: int
     description: str
     status: str
     result: Optional[str]
-    created_at: str
-    updated_at: str
+    created_at: datetime
+    updated_at: datetime
 
     class Config:
         from_attributes = True
@@ -70,8 +77,7 @@ def create_task(task: TaskCreate, db: Session = Depends(get_db)):
     except Exception as e:
         print(f"Error sending task to Celery: {e}")
 
-    db_task.created_at = db_task.created_at.isoformat()
-    db_task.updated_at = db_task.updated_at.isoformat()
+    # 不需要手動呼叫 .isoformat()，Pydantic 會根據 TaskResponse 模型自動處理
     return db_task
 
 @app.get("/tasks/", response_model=List[TaskResponse])
@@ -80,10 +86,7 @@ def get_tasks(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     Dashboard 取得所有任務的清單。
     """
     tasks = db.query(models.Task).order_by(models.Task.id.desc()).offset(skip).limit(limit).all()
-    # Pydantic 驗證 datetime 需要轉為 string 或用 jsonable_encoder
-    for t in tasks:
-        t.created_at = t.created_at.isoformat()
-        t.updated_at = t.updated_at.isoformat()
+    # 不需要手動遍歷格式化日期，Pydantic 會自動處理 List[TaskResponse] 中的 datetime 序列化
     return tasks
 
 @app.get("/tasks/pending", response_model=Optional[TaskResponse])
@@ -103,9 +106,7 @@ def get_pending_task(db: Session = Depends(get_db)):
     db.commit()
     db.refresh(task)
 
-    task.created_at = task.created_at.isoformat()
-    task.updated_at = task.updated_at.isoformat()
-
+    # 不需要手動呼叫 .isoformat()
     return task
 
 @app.put("/tasks/{task_id}/status", response_model=TaskResponse)
@@ -124,8 +125,7 @@ def update_task_status(task_id: int, status_update: TaskStatusUpdate, db: Sessio
     db.commit()
     db.refresh(task)
 
-    task.created_at = task.created_at.isoformat()
-    task.updated_at = task.updated_at.isoformat()
+    # 不需要手動呼叫 .isoformat()
     return task
 
 @app.get("/health")
