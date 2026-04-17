@@ -49,10 +49,7 @@ def client(db_session):
     提供一個配置好 dependency_override 的 TestClient。
     """
     def override_get_db():
-        try:
-            yield db_session
-        finally:
-            pass
+        yield db_session
 
     app.dependency_overrides[get_db] = override_get_db
     with TestClient(app) as c:
