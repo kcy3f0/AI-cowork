@@ -58,12 +58,18 @@ if not tasks:
 else:
     # 顯示任務列表 (可以用表格或展開卡片)
     with placeholder.container():
-        # 計算統計資料
+        # 計算統計資料 (優化：單次遍歷統計各狀態數量)
         total = len(tasks)
-        pending = sum(1 for t in tasks if t["status"] == "Pending")
-        claimed = sum(1 for t in tasks if t["status"] == "Claimed")
-        completed = sum(1 for t in tasks if t["status"] == "Completed")
-        failed = sum(1 for t in tasks if t["status"] == "Failed")
+        counts = {"Pending": 0, "Claimed": 0, "Completed": 0, "Failed": 0}
+        for t in tasks:
+            status = t.get("status")
+            if status in counts:
+                counts[status] += 1
+
+        pending = counts["Pending"]
+        claimed = counts["Claimed"]
+        completed = counts["Completed"]
+        failed = counts["Failed"]
 
         # 顯示統計指標
         col1, col2, col3, col4 = st.columns(4)
