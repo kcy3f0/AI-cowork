@@ -111,3 +111,62 @@ def test_get_tasks_pagination(client, db_session):
     assert len(data) == 2
     assert data[0]["description"] == "Task 1"
     assert data[1]["description"] == "Task 0"
+
+def test_update_task_status_success(client, db_session):
+    """
+    測試更新任務狀態與結果，並驗證資料庫持久化。
+    """
+    # 1. 準備測試資料
+    task = models.Task(description="Update Me", status="Claimed")
+    db_session.add(task)
+    db_session.commit()
+    db_session.refresh(task)
+
+    # 2. 呼叫 API
+    payload = {"status": "Completed", "result": "Task finished successfully"}
+    response = client.put(f"/tasks/{task.id}/status", json=payload)
+
+    # 3. 驗證 API 回傳結果
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "Completed"
+    assert data["result"] == "Task finished successfully"
+
+    # 4. 驗證資料庫中的資料已確實更新 (驗證持久化)
+    db_task = db_session.query(models.Task).filter(models.Task.id == task.id).first()
+    assert db_task.status == "Completed"
+    assert db_task.result == "Task finished successfully"
+
+def test_update_task_status_not_found(client):
+    """
+    測試更新不存在的任務，應回傳 404。
+    """
+    payload = {"status": "Completed"}
+    response = client.put("/tasks/9999/status", json=payload)
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Task not found"
+
+def test_update_task_status_only_status(client, db_session):
+    """
+    測試僅更新狀態而不更新結果，並驗證資料庫持久化。
+    """
+    # 1. 準備測試資料
+    task = models.Task(description="Partial Update", status="Claimed", result="Existing Result")
+    db_session.add(task)
+    db_session.commit()
+    db_session.refresh(task)
+
+    # 2. 呼叫 API，只傳送狀態
+    payload = {"status": "Failed"}
+    response = client.put(f"/tasks/{task.id}/status", json=payload)
+
+    # 3. 驗證 API 回傳結果
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "Failed"
+    assert data["result"] == "Existing Result"
+
+    # 4. 驗證資料庫資料 (驗證持久化)
+    db_task = db_session.query(models.Task).filter(models.Task.id == task.id).first()
+    assert db_task.status == "Failed"
+    assert db_task.result == "Existing Result"
